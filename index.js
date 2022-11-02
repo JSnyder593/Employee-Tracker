@@ -6,6 +6,10 @@ const inquirer = require('inquirer');
 const fs = require('fs');
 const mysql = require('mysql2')
 
+// array of employees/roles
+const employees = []
+const roles = ['Sales Lead', 'Salesperson', ]
+
 // initial function
 askQuestion = () => {
     inquirer.prompt([
@@ -73,7 +77,15 @@ updateRole = () => {
         type: "input",
         name: "employee",
         message: "Which employee's role do you want to update?",
-    },
+    }.then((ans) => {
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "choice",
+                choices: employees
+            }    
+        ])
+    }),
     {
         type: "input",
         name: "role",
@@ -139,16 +151,6 @@ askQuestion();
 //department
 //salary
 //manager
-
-
-
-
-
-
-
-//Update Employee Role
-//Which employee's role do you want to update?
-//What role do you want to assign the selected employee?
 
 
 
