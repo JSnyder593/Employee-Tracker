@@ -1,14 +1,7 @@
-// class constructors
-const Employee = require('./lib/Employee')
-
-// packages
+const DB = require('./db/index.js')
+const db = require("./db/connection.js");
 const inquirer = require('inquirer');
-const fs = require('fs');
-const mysql = require('mysql2')
-
-// array of employees/roles
-const employees = []
-const roles = ['Sales Lead', 'Salesperson', ]
+const cTable = require('console.table')
 
 // initial function
 askQuestion = () => {
@@ -94,7 +87,11 @@ updateRole = () => {
     ]).then((ans) => {})
 };
 
-viewRoles = () => {};
+viewRoles = () => {
+    db.query(`SELECT roles.id AS ID, roles.title AS Title, departments.department_name AS Department, roles.salary AS Salary FROM roles`, function (err, results) {
+        console.log(results);
+    })
+};
 //show all roles
 
 addRole = () => {
@@ -117,7 +114,11 @@ addRole = () => {
     ]).then((ans) => {})
 };
 
-viewDepartments = () => {};
+viewDepartments = () => {
+    db.query(`SELECT departments.id AS ID, departments.department_name AS Department FROM departments;`, function (err, results) {
+        console.table(results);
+    })
+};
 //show all departments
 
 addDepartment = () => {

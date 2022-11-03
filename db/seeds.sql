@@ -81,6 +81,3 @@ VALUES ('Fawkes', 'Jameson', 6, 4);
 INSERT INTO employees (last_name, first_name, role_id, manager_id)
 VALUES ('Zenyatta', 'Tekhartha', 6, 4);
 
-SELECT * FROM departments;
-SELECT * FROM roles;
-SELECT * FROM employees;
