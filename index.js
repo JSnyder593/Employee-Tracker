@@ -15,15 +15,16 @@ let employeeArr = []
 
 const db = mysql.createConnection(
     {
-      host: 'localhost',
-      user: 'root',
-      password: 'password',
-      database: 'tracker_db'
+        host: 'localhost',
+        user: 'root',
+        password: 'password',
+        database: 'tracker_db'
     },
     console.log(`Connected to database.`)
 );
 
-function init() {
+//initializing function with arrays and switch cases for each possible choice
+init = () => {
     departmentArr = []
     roleArr = []
     employeeArr = []
@@ -32,43 +33,31 @@ function init() {
         {
             name: "question",
             type: "list",
-            choices: ["View all departments", "View all roles", "View all employees", "Add a department", "Add a role", "Add an employee", "Update an employee's role", "Quit"]
+            choices: ["View All Employees", "Add Employee", "Update Employee Role", "View All Departments", "View All Roles", "Add Role", "Add Department"]
         }
-    ]).then(answers => {
-        switch (answers.question) {
-            case "View all departments":
-                console.log("Viewing all departments!")
-                viewDepartments();
-                break;
+    ]).then(ans => {
+        switch (ans.choice) {
 
-            case "View all roles":
-                console.log("Viewing all roles!")
-                viewRoles()
-                break;
-
-            case "View all employees":
-                console.log("Viewing all employees!")
+            case "View All Employees":
                 viewEmployees()
                 break;
-
-            case "Add a department":
-                console.log("Adding a department!")
-                addDepartment()
-                break;
-
-            case "Add a role":
-                console.log("Adding a role!")
-                addRole ()
-                break;
-
-            case "Add an employee":
-                console.log("Adding an employee!")
+            case "Add Employee":
                 addEmployee()
                 break;
-
-            case "Update an employee's role":
-                console.log("Updating an employee's role!")
-                updateEmployee ()
+            case "Update Employee Role":
+                updateEmployee()
+                break;
+            case "View All Roles":
+                viewRoles()
+                break;
+            case "View All Departments":
+                viewDepartments();
+                break;
+            case "Add Role":
+                addRole()
+                break;
+            case "Add Department":
+                addDepartment()
                 break;
 
             default:
@@ -78,34 +67,11 @@ function init() {
     })
 }
 
-function viewDepartments () {
-    db.query(`SELECT * FROM departments`, (err, result) => {
-        if (err) {
-        console.log(err);
-        }
-        console.log('')
-        console.table(result)
-        console.log('')
-        init();
-    });
-}
-
-function viewRoles () {
-    db.query(`SELECT * FROM roles`, (err, result) => {
-        if (err) {
-        console.log(err);
-        }
-        console.log('')
-        console.table(result)
-        console.log('')
-        init();
-    });
-}
-
-function viewEmployees () {
+//views all employees
+viewEmployees = () => {
     db.query(`SELECT * FROM employees`, (err, result) => {
         if (err) {
-        console.log(err);
+            console.log(err);
         }
         console.log('')
         console.table(result)
@@ -114,47 +80,8 @@ function viewEmployees () {
     });
 }
 
-function addDepartment () {
-    inquirer.prompt([
-        {
-            type: "input",
-            message: "What is the name of the new department?",
-            name: "departmentName"
-        },
-    ]).then(answer => {
-        db.query(`INSERT INTO departments (name) VALUES ("${answer.departmentName}")`)
-        init();
-    })
-}
-
-function addRole () {
-    // departmentArr = []
-    findDepartments()
-    inquirer.prompt([
-        {
-            type: "input",
-            message: "What is the name of the new role?",
-            name: "roleName"
-        },
-        {
-            name: "question",
-            type: "list",
-            message: "What is the id of the department this role belongs to?",
-            choices: departmentArr
-        },
-        {
-            type: "input",
-            message: "What is the salary of the new role? (do not include commas)",
-            name: "roleSalary"
-        }
-    ]).then(answer => {
-        db.query(`INSERT INTO roles (title, department, salary) VALUES 
-        ("${answer.roleName}", ${answer.question}, '${answer.roleSalary}')`)
-        init();
-    })
-}
-
-function addEmployee () {
+//adds new employee
+addEmployee = () => {
     findRoles()
     inquirer.prompt([
         {
@@ -177,17 +104,18 @@ function addEmployee () {
             name: "question2",
             type: "list",
             message: "Is this person a manager? (0 for no, 1 for yes)",
-            choices: [0,1]
+            choices: [0, 1]
         }
-    ]).then(answer => {
+    ]).then(ans => {
         db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES 
-        ("${answer.firstName}", "${answer.lastName}", ${answer.question1}, ${answer.question2})`)
+        ("${ans.firstName}", "${ans.lastName}", ${ans.question1}, ${ans.question2})`)
         init();
     })
 }
 
-function updateEmployee () {
-    findEmployees ()
+//updates employee
+function updateEmployee() {
+    findEmployees()
     findRoles()
     inquirer.prompt([
         {
@@ -207,10 +135,79 @@ function updateEmployee () {
             message: "What is the id of the role this employee belongs to?",
             choices: roleArr
         }
-    ]).then(answer => {
-        db.query(`UPDATE employees SET role_id = ${answer.question2} WHERE id = ${answer.question1}`)
+    ]).then(ans => {
+        db.query(`UPDATE employees SET role_id = ${ans.question2} WHERE id = ${ans.question1}`)
         init();
     })
 }
 
+
+//views all roles
+viewRoles = () => {
+    db.query(`SELECT * FROM roles`, (err, result) => {
+        if (err) {
+            console.log(err);
+        }
+        console.log('')
+        console.table(result)
+        console.log('')
+        init();
+    });
+}
+
+//adds new role
+addRole = () => {
+    findDepartments()
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the name of the new role?",
+            name: "roleName"
+        },
+        {
+            name: "question",
+            type: "list",
+            message: "What is the id of the department this role belongs to?",
+            choices: departmentArr
+        },
+        {
+            type: "input",
+            message: "What is the salary of the new role? (do not include commas)",
+            name: "roleSalary"
+        }
+    ]).then(ans => {
+        db.query(`INSERT INTO roles (title, department, salary) VALUES 
+        ("${ans.roleName}", ${ans.question}, '${ans.roleSalary}')`)
+        init();
+    })
+}
+
+//views all departments
+viewDepartments = () => {
+    db.query(`SELECT * FROM departments`, (err, result) => {
+        if (err) {
+            console.log(err);
+        }
+        console.log('')
+        console.table(result)
+        console.log('')
+        init();
+    });
+}
+
+//adds new department
+addDepartment = () => {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the name of the new department?",
+            name: "departmentName"
+        },
+    ]).then(ans => {
+        db.query(`INSERT INTO departments (name) VALUES ("${ans.departmentName}")`)
+        init();
+    })
+}
+
+//initializing function
 init();
