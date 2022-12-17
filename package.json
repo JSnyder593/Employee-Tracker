@@ -1,12 +1,14 @@
 {
   "dependencies": {
+    "console.log": "^0.1.3",
     "console.table": "^0.10.0",
-    "inquirer": "^8.2.4",
+    "express": "^4.18.2",
+    "inquirer": "^8.2.5",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3"
   },
   "name": "employee-tracker",
-  "description": "",
+  "description": "This challenge was assigned so that I could apply SQL, constructor functions, etc. to create a user friendly terminal that can be interacted with to view employees, departments, roles so that they can be assigned, updated, etc. and be viewed in the terminal.",
   "version": "1.0.0",
   "main": "index.js",
   "directories": {
